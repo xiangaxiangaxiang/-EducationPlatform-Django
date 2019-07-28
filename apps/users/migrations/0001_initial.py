@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
                 ('nick_name', models.CharField(default='', max_length=50, verbose_name='\u6635\u79f0')),
                 ('birday', models.DateField(blank=True, null=True, verbose_name='\u751f\u65e5')),
-                ('gender', models.CharField(choices=[('male', '\u7537'), ('female', '\u5973')], default='female', max_length=5)),
+                ('gender', models.CharField(choices=[('male', '\u7537'), ('female', '\u5973')], default='female', max_length=10)),
                 ('address', models.CharField(default='', max_length=100)),
                 ('mobile', models.CharField(blank=True, max_length=11, null=True)),
                 ('image', models.ImageField(default='image/default.png', upload_to='image/%Y/%m')),

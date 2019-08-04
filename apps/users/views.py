@@ -115,7 +115,7 @@ class ResetView(View):
         return render(request, 'login.html')
 
 
-class ModifyPwd():
+class ModifyPwd(View):
     def post(self, request):
         modify_form = ModifyPwdForm(request.POST)
         if modify_form.is_valid():

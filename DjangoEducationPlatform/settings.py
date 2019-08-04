@@ -150,3 +150,6 @@ EMAIL_HOST_USER = 'cpxlalala@sina.com'
 EMAIL_HOST_PASSWORD = 'cpx,./123'
 EMAIL_USE_TLS = False
 EMAIL_FROM = 'cpxlalala@sina.com'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -73,7 +73,7 @@ class OrgHomeView(View):
         course_org = CourseOrg.objects.get(id=int(org_id))
         has_fav = False
         if request.user.is_authenticated():
-            if UserFavorite.objects.filter(user=request, fav_id=course_org.id, fav_type=2):
+            if UserFavorite.objects.filter(user=request.user, fav_id=course_org.id, fav_type=2):
                 has_fav = True
         all_course = course_org.course_set.all()[:3]
         all_teacher = course_org.course_set.all()[:3]
@@ -92,7 +92,7 @@ class OrgCourseView(View):
         course_org = CourseOrg.objects.get(id=int(org_id))
         has_fav = False
         if request.user.is_authenticated():
-            if UserFavorite.objects.filter(user=request, fav_id=course_org.id, fav_type=2):
+            if UserFavorite.objects.filter(user=request.user, fav_id=course_org.id, fav_type=2):
                 has_fav = True
         all_course = course_org.course_set.all()
         return render(request, 'org-detail-course.html', {
@@ -110,7 +110,7 @@ class OrgDescView(View):
         course_org = CourseOrg.objects.get(id=int(org_id))
         has_fav = False
         if request.user.is_authenticated():
-            if UserFavorite.objects.filter(user=request, fav_id=course_org.id, fav_type=2):
+            if UserFavorite.objects.filter(user=request.user, fav_id=course_org.id, fav_type=2):
                 has_fav = True
         return render(request, 'org-detail-desc.html', {
             'current_page': current_page,
@@ -127,7 +127,7 @@ class OrgTeacherView(View):
         all_teacher = course_org.teacher_set.all()
         has_fav = False
         if request.user.is_authenticated():
-            if UserFavorite.objects.filter(user=request, fav_id=course_org.id, fav_type=2):
+            if UserFavorite.objects.filter(user=request.user, fav_id=course_org.id, fav_type=2):
                 has_fav = True
         return render(request, 'org-detail-desc.html', {
             'current_page': current_page,
@@ -150,7 +150,7 @@ class AddFavView(View):
             }
             return HttpResponse(res, content_type='application/json')
 
-        exist_records = UserFavorite.objects.filter(user=request, fav_id=int(fav_id), fav_type=int(fav_type))
+        exist_records = UserFavorite.objects.filter(user=request.user, fav_id=int(fav_id), fav_type=int(fav_type))
         if exist_records:
             # 如果记录存在，则取消保存
             exist_records.delete()

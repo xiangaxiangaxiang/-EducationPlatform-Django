@@ -1,8 +1,8 @@
 # coding=utf-8
-from organization.views import OrgView,AddUserAskView,OrgHomeView,OrgCourseView,OrgDescView,OrgTeacherView,AddFavView
-
 __author__ = 'chen'
 __date__ = '2019/8/7 21:38'
+from organization.views import OrgView,AddUserAskView,OrgHomeView,OrgCourseView,OrgDescView,OrgTeacherView,AddFavView
+from views import TeacherListView, TeacherDetailView
 
 from django.conf.urls import url, include
 
@@ -17,4 +17,9 @@ urlpatterns = [
 
     # 机构收藏
     url(r'^add_fav/$', AddFavView.as_view(), name='add_fav'),
+
+    # 讲师列表页
+    url(r'teacher/list/$', TeacherListView.as_view(), name='teacher_list'),
+    # 教师详情
+    url(r'teacher/detail/(?P<teacher_id>\d+)/$', TeacherDetailView.as_view(), name='teacher_detail'),
 ]

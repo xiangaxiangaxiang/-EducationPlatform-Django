@@ -2,6 +2,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic.base import View
+from django.db.models import Q
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
 from courses.models import Course, CourseResource, Video
@@ -12,6 +13,11 @@ class CourseListView(View):
     def get(self, request):
         all_course = Course.objects.all().order_by('-add_time')
         hot_course = Course.objects.all().order_by('-click_nums')[:3]
+
+        # 课程搜索
+        search_keywords = request.GET.get('keywords', '')
+        if search_keywords:
+            all_course = all_course.filter(Q(name__icontains=search_keywords)|Q(desc__icontains=search_keywords)|Q(detail__icontains=search_keywords))
 
         # 排序
         sort = request.GET.get('sort', '')

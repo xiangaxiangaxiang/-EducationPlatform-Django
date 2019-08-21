@@ -2,10 +2,10 @@
 import json
 
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.base import View
 from django.contrib.auth.hashers import make_password
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
@@ -29,6 +29,13 @@ class CustomBackend(ModelBackend):
                 return user
         except Exception as e:
             return None
+
+# 登出
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        from django.core.urlresolvers import reverse
+        return HttpResponseRedirect(reverse('index'))
 
 
 # 登录
@@ -274,6 +281,10 @@ class MymessageView(LoginRequiredMixin, View):
     def get(self, request):
 
         all_messages = UserMessage.objects.filter(user=request.user.id)
+        all_unread_messages = UserMessage.objects.filter(user=request.user.id, has_read=False)
+        for all_unread_message in all_unread_messages:
+            all_unread_message.has_read = True
+            all_unread_message.save()
 
         # 对消息进行分页
         try:
@@ -286,3 +297,19 @@ class MymessageView(LoginRequiredMixin, View):
         return render(request, 'usercenter-message.html', {
             'messages': messages
         })
+
+
+def page_not_found(request):
+    # 全局404配置
+    from django.shortcuts import render_to_response
+    response = render_to_response('404.html', {})
+    response.status_code = 404
+    return response
+
+
+def page_error(request):
+    # 全局500配置
+    from django.shortcuts import render_to_response
+    response = render_to_response('500.html', {})
+    response.status_code = 500
+    return response

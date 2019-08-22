@@ -1,6 +1,7 @@
 # coding=utf-8
 import json
 
+from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
@@ -11,7 +12,7 @@ from django.contrib.auth.hashers import make_password
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
 from operation.models import UserCourse, UserFavorite, UserMessage
-from users.models import UserProfile, EmailVerifyRecord
+from users.models import UserProfile, EmailVerifyRecord, Banner
 from users.forms import LoginForm, RegisterForm, ForgetForm, ModifyPwdForm, UploadImageForm, UserInfoForm
 from organization.models import CourseOrg,Teacher
 from courses.models import Course
@@ -34,7 +35,6 @@ class CustomBackend(ModelBackend):
 class LogoutView(View):
     def get(self, request):
         logout(request)
-        from django.core.urlresolvers import reverse
         return HttpResponseRedirect(reverse('index'))
 
 
@@ -52,7 +52,7 @@ class LoginView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return render(request, 'index.html')
+                    return HttpResponseRedirect(reverse('index'))
                 else:
                     return render(request, 'login.html', {'msg': '用户未激活'})
             else:
@@ -297,6 +297,23 @@ class MymessageView(LoginRequiredMixin, View):
         return render(request, 'usercenter-message.html', {
             'messages': messages
         })
+
+
+class IndexView(View):
+    # 首页
+    def get(self, request):
+        # 取出轮播图
+        all_banner = Banner.objects.all().order_by('index')
+        courses = Course.objects.filter(is_banner=False)[:5]
+        banner_course = Course.objects.filter(is_banner=True)[:3]
+        course_orgs = CourseOrg.objects.all()[:15]
+        return render(request, 'index.html', {
+            'all_banner': all_banner,
+            'courses': courses,
+            'banner_course': banner_course,
+            'course_orgs': course_orgs
+        })
+
 
 
 def page_not_found(request):
